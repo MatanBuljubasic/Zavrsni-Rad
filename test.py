@@ -5,13 +5,17 @@ import os
 import winsound
 from datetime import datetime
 
-# for count, filename in enumerate(os.listdir('Audio\words')):
-#     dst = filename.lstrip("1234568790_")
-#     dst = dst.removeprefix("margo_heston__")
-#     src = f"Audio\words/{filename}"
-#     dst = f"Audio\words/{dst}"
-#     os.rename(src, dst)
+def replace_last(string, delimiter, replacement):
+    start, _, end = string.rpartition(delimiter)
+    return start + replacement + end
 
-for count, filename in enumerate(os.listdir('Audio\words')):
+for count, filename in enumerate(os.listdir('Audio\sentences')):
+    dst = filename.replace(' q-', '_q-')
+    src = f"Audio\sentences/{filename}"
+    dst = f"Audio\sentences/{dst}"
+    os.rename(src, dst)
+
+for count, filename in enumerate(os.listdir('Audio\sentences')):
     if count % 2 == 0:
-        print(filename.split("-")[0])
+        sentence = filename.removesuffix('.wav').rstrip('fm').replace('_q_', '?').replace('_',' ').rstrip(' ')
+        print(f'"{sentence}",')

@@ -20,6 +20,8 @@ class SyllableBeginnerPage(TrainingPage):
         female_button = ttk.Radiobutton(self.settings_frame, text='Female', variable=self.gender, value='f')
         male_button.grid(column=0, row=1)
         female_button.grid(column=0, row=2)
+        repeat_button = ttk.Button(self.settings_frame, text='Repeat', style='my.TButton', command= lambda: [mixer.Channel(0).play(mixer.Sound(f'Audio\\syllables\\{self.correct_a.lower()}-{self.gender.get()}.wav'))])
+        repeat_button.grid(column=1, row=1)
         self.level = 1
         self.stimuli = STIMULI[1]
 
@@ -83,6 +85,8 @@ class SyllableIntermediatePage(TrainingPage):
         female_button = ttk.Radiobutton(self.settings_frame, text='Female', variable=self.gender, value='f')
         male_button.grid(column=0, row=1)
         female_button.grid(column=0, row=2)
+        repeat_button = ttk.Button(self.settings_frame, text='Repeat', style='my.TButton', command= lambda: [mixer.Channel(0).play(mixer.Sound(f'Audio\\syllables\\{SYLLABLES_WORDS[self.correct_a][self.rand_syll]}-{self.gender.get()}.wav'))])
+        repeat_button.grid(column=1, row=1)
         self.level = 2
         self.stimuli = STIMULI[1]
 
@@ -124,14 +128,14 @@ class SyllableIntermediatePage(TrainingPage):
     def next_task(self):
         self.stats_label.config(text=f'Task: {self.task_number+1}/10\nAccuracy: {float(self.accuracy):.3f}%')
         rand_word = random.sample(range(1, len(WORDS_S)), 3)
-        rand_syll = random.randint(0,1)
+        self.rand_syll = random.randint(0,1)
         correct = random.sample(rand_word, 1)[0]
         self.correct_a = WORDS_S[correct]
         self.first_button.config(text=f'{WORDS_S[rand_word[0]]}')
         self.second_button.config(text=f'{WORDS_S[rand_word[1]]}')
         self.third_button.config(text=f'{WORDS_S[rand_word[2]]}')
         self.update()
-        mixer.Channel(0).play(mixer.Sound(f'Audio\\syllables\\{SYLLABLES_WORDS[self.correct_a][rand_syll]}-{self.gender.get()}.wav'))
+        mixer.Channel(0).play(mixer.Sound(f'Audio\\syllables\\{SYLLABLES_WORDS[self.correct_a][self.rand_syll]}-{self.gender.get()}.wav'))
 
 
 class SyllableExpertPage(TrainingPage):
@@ -146,6 +150,8 @@ class SyllableExpertPage(TrainingPage):
         female_button = ttk.Radiobutton(self.settings_frame, text='Female', variable=self.gender, value='f')
         male_button.grid(column=0, row=1)
         female_button.grid(column=0, row=2)
+        repeat_button = ttk.Button(self.settings_frame, text='Repeat', style='my.TButton', command= lambda: [mixer.Channel(0).play(mixer.Sound(f'Audio\\syllables\\{self.correct_a}-{self.gender.get()}.wav'))])
+        repeat_button.grid(column=1, row=1)
         self.level = 3
         self.stimuli = STIMULI[1]
 

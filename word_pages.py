@@ -2,17 +2,16 @@ from tkinter import *
 from tkinter import ttk
 from training_page import TrainingPage
 import winsound
-from constants import STIMULI
+from constants import STIMULI, WORDS, SIMILAR_WORDS
 import pygame.mixer as mixer
 from pygame.mixer import music
 import random
-from constants import WORDS, SIMILAR_WORDS
 
 class WordBeginnerPage(TrainingPage):
     def __init__(self, parent, container):
         super().__init__(parent, container)
 
-        self.info_label.config(text="You will hear a word. Your task is to choose\nthe word you have heard", font=('Times', 40))
+        self.info_label.config(text="You will hear a word. Your task is to choose\nthe word you have heard.", font=('Times', 40))
         gender_label = ttk.Label(self.settings_frame, text='Choose the gender of the voice speaking:', font=('Times', 20))
         gender_label.grid(column=0, row=0)
         self.gender = StringVar(None, 'm')
@@ -20,6 +19,8 @@ class WordBeginnerPage(TrainingPage):
         female_button = ttk.Radiobutton(self.settings_frame, text='Female', variable=self.gender, value='f')
         male_button.grid(column=0, row=1)
         female_button.grid(column=0, row=2)
+        repeat_button = ttk.Button(self.settings_frame, text='Repeat', style='my.TButton', command= lambda: [mixer.Channel(0).play(mixer.Sound(f'Audio\\words\\{self.correct_a.lower()}-{self.gender.get()}.wav'))])
+        repeat_button.grid(column=1, row=1)
         self.level = 1
         self.stimuli = STIMULI[2]
 
@@ -77,6 +78,8 @@ class WordIntermediatePage(TrainingPage):
         female_button = ttk.Radiobutton(self.settings_frame, text='Female', variable=self.gender, value='f')
         male_button.grid(column=0, row=1)
         female_button.grid(column=0, row=2)
+        repeat_button = ttk.Button(self.settings_frame, text='Repeat', style='my.TButton', command= lambda: [mixer.Channel(0).play(mixer.Sound(f'Audio\\words\\{self.correct_a.lower()}-{self.gender.get()}.wav'))])
+        repeat_button.grid(column=1, row=1)
         self.level = 2
         self.stimuli = STIMULI[2]
 
@@ -139,6 +142,8 @@ class WordExpertPage(TrainingPage):
         female_button = ttk.Radiobutton(self.settings_frame, text='Female', variable=self.gender, value='f')
         male_button.grid(column=0, row=1)
         female_button.grid(column=0, row=2)
+        repeat_button = ttk.Button(self.settings_frame, text='Repeat', style='my.TButton', command= lambda: [mixer.Channel(0).play(mixer.Sound(f'Audio\\words\\{self.correct_a}-{self.gender.get()}.wav'))])
+        repeat_button.grid(column=1, row=1)
         self.level = 3
         self.stimuli = STIMULI[2]
 

@@ -1,12 +1,14 @@
 from tkinter import *
 from tkinter import ttk
-import pyrebase
+import pyrebase 
+from firebase_admin import auth
 import re
 from frequency_pages import *
 from training_page import *
 from syllable_pages import *
 from word_pages import *
 from sentence_pages import *
+from registration_pages import *
 from constants import STIMULI
 import pygame
 
@@ -17,10 +19,18 @@ class App(Tk):
     def __init__(self):
         super().__init__()
 
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        window_width = self.winfo_screenwidth()
+        window_height = self.winfo_screenheight()
+        x = (screen_width/2) - (window_width/2)
+        y = (screen_height/2) - (window_height/2)
+
         self.title("Auditory Training")
-        self.geometry("1280x720")
+        self.geometry('%dx%d+%d+%d' % (window_width, window_height, x, y))
         self.minsize(1280,720)
         self.resizable(True,True)
+        self.state('zoomed')
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.option_add("*Label.Font", "aerial 30 bold")
@@ -84,235 +94,6 @@ class App(Tk):
         frame = F(self, self.container)
         self.frames[F] = frame
 
-
-
-class LandingPage(ttk.Frame):
-
-    def __init__(self, parent, container):
-        super().__init__(container)
-
-        landing_style = ttk.Style()
-        landing_style.configure('My.TLanding', background='blue')
-        
-        self.columnconfigure(0, weight = 1)
-        self.rowconfigure(0, weight = 1)
-        self.rowconfigure(1, weight = 3)
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1)
-
-        
-        s = ttk.Style()
-        s.configure('My.TFrame', background='red')
-
-        title_frame = ttk.Frame(self, borderwidth=2, relief='raised', padding='0.5i')
-        title_frame.grid(column=0, row=0)
-        title_frame.grid_rowconfigure(0, weight=1)
-        title_frame.grid_columnconfigure(0, weight=1)
-
-        title_label = ttk.Label(title_frame, text="Welcome to auditory training!")
-        title_label.grid(row=0, column=0, sticky="nsew")
-        title_label.config(font=('Times', 36))
-
-        mainframe = ttk.Frame(self)
-        mainframe.grid(column=0, row=1)
-        mainframe.grid_rowconfigure(0, weight=1)
-        mainframe.grid_columnconfigure(0, weight=1)
-
-        login_label = ttk.Label(mainframe, text="If you already have an account, click here to login:")
-        login_label.grid(column=0, row=1, sticky="nsew", pady=(20,5))
-        login_label.config(font=('Times', 16))
-        login_button = ttk.Button(mainframe, text="Login", command=lambda: [parent.hide_frame(LandingPage), parent.show_frame(LoginPage)])
-        login_button.grid(column=0, row=2, sticky="nsew")
-
-        register_label = ttk.Label(mainframe, text="If you're a first time user, click here to create an account:")
-        register_label.grid(column=0, row=3, sticky="w", pady=(20,5))
-        register_label.config(font=('Times', 16))
-        register_button = ttk.Button(mainframe, text="Create an account", command=lambda: [parent.hide_frame(LandingPage), parent.show_frame(RegisterPage)])
-        register_button.grid(column=0, row=4, sticky="nsew")
-
-
-
-class LoginPage(ttk.Frame):
-    def __init__(self, parent, container):
-        super().__init__(container)
-
-        self.columnconfigure(0, weight = 1)
-        self.columnconfigure(1, weight = 1)
-        self.columnconfigure(2, weight = 1)
-        self.rowconfigure(0, weight = 1)
-        self.rowconfigure(1, weight = 1)
-        self.rowconfigure(2, weight = 1)
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1)
-
-        back_button = ttk.Button(self, text='Back', command= lambda: [parent.hide_frame(LoginPage), self.email_entry.delete(0, END), self.password_entry.delete(0, END), parent.show_frame(LandingPage)])
-        back_button.grid(column=0, row=2, sticky="sw")
-
-        login_frame = ttk.Frame(self)
-        login_frame.grid(column=1, row=1)
-        login_frame.grid_rowconfigure(0, weight=1)
-        login_frame.grid_columnconfigure(0, weight=1)
-
-        email_label = ttk.Label(login_frame, text="Email:")
-        email_label.grid(column=0, row=0, sticky="nsew", padx=(0, 10), pady=(0,10))
-
-        email = StringVar()
-        self.email_entry = ttk.Entry(login_frame, width=30, textvariable=email)
-        self.email_entry.grid(column=1, row=0, sticky="w", pady=(0,10))
-
-        password_label = ttk.Label(login_frame, text="Password:")
-        password_label.grid(column=0, row=1, sticky="nsew", pady=(0,10))
-
-        password = StringVar()
-        self.password_entry = ttk.Entry(login_frame, width=30, textvariable=password, show="*")
-        self.password_entry.grid(column=1, row=1, sticky="w", pady=(0,10))
-
-        self.toggle_button = ttk.Button(login_frame, text='Show Password', width=15, command= lambda: self.toggle_password())
-        self.toggle_button.grid(column=2, row=1, sticky="nw")
-
-        login_button = ttk.Button(login_frame, text="Login", command= lambda: [self.login(email, password, parent)])
-        login_button.grid(column=1, row=2, sticky="e")
-
-        self.error_message = StringVar()
-        error_message_label = ttk.Label(login_frame, font='TkSmallCaptionFont', foreground='red', textvariable=self.error_message)
-        error_message_label.grid(column=1, row=3, sticky="w")
-
-    def login(self, email, password, parent):
-        self.error_message.set('')
-        try:
-            user = parent.auth.sign_in_with_email_and_password(email.get(), password.get())
-            parent.user_id = user['localId']
-            parent.hide_frame(LoginPage)
-            self.email_entry.delete(0, END)
-            self.password_entry.delete(0, END)
-            home_page = parent.frames[HomePage]
-            home_page.add_user(parent)
-            parent.show_frame(HomePage)
-        except:
-            self.error_message.set('Username or password is incorrect.')
-
-    def toggle_password(self):
-        if self.password_entry.cget('show') == '':
-            self.password_entry.config(show='*')
-            self.toggle_button.config(text='Show Password')
-        else:
-            self.password_entry.config(show='')
-            self.toggle_button.config(text='Hide Password')
-        
-
-class RegisterPage(ttk.Frame):
-    def __init__(self, parent, container):
-        super().__init__(container)
-
-        self.columnconfigure(0, weight = 1)
-        self.columnconfigure(1, weight = 1)
-        self.columnconfigure(2, weight = 1)
-        self.rowconfigure(0, weight = 1)
-        self.rowconfigure(1, weight = 1)
-        self.rowconfigure(2, weight = 1)
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1)
-        self.email_state=False
-        self.password_state=False
-
-        check_password_wrapper = (self.register(self.check_password), '%P')
-        check_email_wrapper = (self.register(self.check_email), '%P')
-
-        back_button = ttk.Button(self, text='Back', command= lambda: [parent.hide_frame(RegisterPage), self.email_entry.delete(0, END), self.password_entry.delete(0, END), self.error_message.set(''), self.email_message.set(''), self.password_message.set(''), parent.show_frame(LandingPage)])
-        back_button.grid(column=0, row=2, sticky="sw")
-
-        register_frame = ttk.Frame(self)
-        register_frame.grid(column=1, row=1)
-        register_frame.grid_rowconfigure(0, weight=1)
-        register_frame.grid_columnconfigure(0, weight=1)
-
-        email_label = ttk.Label(register_frame, text="Email:")
-        email_label.grid(column=0, row=0, sticky="nsew", padx=(0, 10), pady=(0,10))
-
-        email = StringVar()
-        email.trace('w', self.check_both)
-        self.email_entry = ttk.Entry(register_frame, width=30, textvariable=email, validate='focusout', validatecommand=check_email_wrapper)
-        self.email_entry.grid(column=1, row=0, sticky="w", pady=(0,10))
-
-        self.email_message = StringVar()
-        email_message = ttk.Label(register_frame, font='TkSmallCaptionFont', foreground='red', textvariable=self.email_message)
-        email_message.grid(column=1, row=1, sticky="nw")
-
-        password_label = ttk.Label(register_frame, text="Password:")
-        password_label.grid(column=0, row=2, sticky="nsew", pady=(0,10))
-
-        password = StringVar()
-        password.trace('w', self.check_both)
-        self.password_entry = ttk.Entry(register_frame, width=30, textvariable=password, show="*", validate='focusout', validatecommand=check_password_wrapper)
-        self.password_entry.grid(column=1, row=2, sticky="w", pady=(0,10))
-        
-        self.password_message = StringVar()
-        password_message_label = ttk.Label(register_frame, font='TkSmallCaptionFont', foreground='red', textvariable=self.password_message)
-        password_message_label.grid(column=1, row=3, sticky="nw")
-
-        self.toggle_button = ttk.Button(register_frame, text='Show Password', width=15, command= lambda: self.toggle_password())
-        self.toggle_button.grid(column=2, row=2, sticky="nw")
-
-        self.register_button = ttk.Button(register_frame, text="Register", command= lambda: [self.register_user(email, password, parent)])
-        self.register_button.grid(column=1, row=4, sticky="e")
-        self.register_button.state(['disabled'])
-
-        self.error_message = StringVar()
-        self.error_message_label = ttk.Label(register_frame, font='TkSmallCaptionFont', foreground='red', textvariable=self.error_message)
-        self.error_message_label.grid(column=1, row=5, sticky="e")
-
-    def register_user(self, email, password, parent):
-        self.error_message.set('')
-        try:
-            user = parent.auth.create_user_with_email_and_password(email.get(),password.get())
-            parent.db.child("users").child(user['localId']).set({"email":user['email']})
-        except:
-            self.error_message.set('Email already exists!')
-            return
-        parent.hide_frame(RegisterPage)
-        self.email_entry.delete(0, END)
-        self.password_entry.delete(0, END)
-        parent.show_frame(LandingPage)
-
-            
-
-    def check_password(self, value):
-        self.password_message.set('')
-        valid = re.match('^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$', value) is not None
-        if valid:
-            self.password_state = True
-        else:
-            self.password_state = False
-            self.password_message.set('Password must have:\n- At least one alphabetic character\n(uppercase or lowercase)\n- At least one digit\n- Minimum length of 8 characters\n- No spaces')
-        return valid
-
-    def check_email(self, value):
-        self.email_message.set('')
-        valid = re.match("[a-z0-9]+@[a-z]+\.[a-z]{2,3}", value) is not None
-        if valid:
-            self.email_state = True
-        else:
-            self.email_state = False
-            self.email_message.set('Email address is not valid.\nExample of valid email address:\njohn.doe@gmail.com')
-        return valid
-        # radi tek kad dodam razmak na kraj
-
-    def check_both(self, *args):
-        x = self.email_state
-        y = self.password_state
-        if x and y:
-            self.register_button.state(['!disabled'])
-        else:
-            self.register_button.state(['disabled'])
-
-    def toggle_password(self):
-        if self.password_entry.cget('show') == '':
-            self.password_entry.config(show='*')
-            self.toggle_button.config(text='Show Password')
-        else:
-            self.password_entry.config(show='')
-            self.toggle_button.config(text='Hide Password')
-
 class HomePage(ttk.Frame):
     def __init__(self, parent, container):
         super().__init__(container)
@@ -324,6 +105,7 @@ class HomePage(ttk.Frame):
         self.rowconfigure(3, weight = 1)
         self.rowconfigure(4, weight = 1)
         self.rowconfigure(5, weight = 1)
+        self.rowconfigure(6, weight = 1)
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         
@@ -346,6 +128,12 @@ class HomePage(ttk.Frame):
 
         sentences_button = ttk.Button(self, text='Sentences', style="my.TButton",  command= lambda: [parent.hide_frame(HomePage), self.choose_stimuli(parent, STIMULI[3])])
         sentences_button.grid(column=0, row=5, sticky="nsew", padx=(300,300), pady=(20,20))
+
+        logout_button = ttk.Button(self, text='Sign out', style="my.TButton", command= lambda: [self.logout_user(), parent.hide_frame(HomePage), parent.show_frame(LandingPage)])
+        logout_button.grid(column=0, row=6, sticky='sw')
+
+    def logout_user(self):
+        auth.current_user = None
     
     def add_user(self, parent):
         email = parent.db.child("users").child(parent.user_id).child("email").get()
@@ -405,7 +193,7 @@ class PreTrainingPage(ttk.Frame):
         self.expert_label = ttk.Label(self.level_frame, text='')
         self.expert_label.grid(column=1, row=2, sticky="w")
 
-        back_button = ttk.Button(self.level_frame, text='Back', command= lambda: [parent.hide_frame(PreTrainingPage), parent.show_frame(HomePage)])
+        back_button = ttk.Button(self.level_frame, text='Back', style='my.TButton', command= lambda: [parent.hide_frame(PreTrainingPage), parent.show_frame(HomePage)])
         back_button.grid(column=0, row=3, sticky="sw")
 
         
@@ -463,9 +251,9 @@ class PreTrainingPage(ttk.Frame):
             self.intermediate_button.config(command= lambda: [parent.hide_frame(PreTrainingPage), parent.init_frame(WordIntermediatePage), parent.show_frame(WordIntermediatePage)])
             self.expert_button.config(command= lambda: [parent.hide_frame(PreTrainingPage), parent.init_frame(WordExpertPage), parent.show_frame(WordExpertPage)])
         else:
-            self.beginner_button.config(command= lambda: [parent.hide_frame(PreTrainingPage), parent.show_frame(SentenceBeginnerPage)])
-            self.intermediate_button.config(command= lambda: [parent.hide_frame(PreTrainingPage), parent.show_frame(SentenceIntermediatePage)])
-            self.expert_button.config(command= lambda: [parent.hide_frame(PreTrainingPage), parent.show_frame(SentenceExpertPage)])
+            self.beginner_button.config(command= lambda: [parent.hide_frame(PreTrainingPage), parent.init_frame(SentenceBeginnerPage), parent.show_frame(SentenceBeginnerPage)])
+            self.intermediate_button.config(command= lambda: [parent.hide_frame(PreTrainingPage), parent.init_frame(SentenceIntermediatePage), parent.show_frame(SentenceIntermediatePage)])
+            self.expert_button.config(command= lambda: [parent.hide_frame(PreTrainingPage), parent.init_frame(SentenceExpertPage), parent.show_frame(SentenceExpertPage)])
 
 
     def calculate_stats(self, results):
