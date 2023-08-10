@@ -33,13 +33,13 @@ class LandingPage(ttk.Frame):
 
         login_label = ttk.Label(mainframe, text="If you already have an account, click here to login:")
         login_label.grid(column=0, row=1, sticky="nsew", pady=(20,5))
-        login_label.config(font=('Times', 16))
+        login_label.config(font=('Times', 18))
         login_button = ttk.Button(mainframe, text="Login", style='my.TButton', command=lambda: [parent.hide_frame(LandingPage), parent.show_frame(LoginPage)])
         login_button.grid(column=0, row=2, sticky="nsew")
 
         register_label = ttk.Label(mainframe, text="If you're a first time user, click here to create an account:")
         register_label.grid(column=0, row=3, sticky="w", pady=(20,5))
-        register_label.config(font=('Times', 16))
+        register_label.config(font=('Times', 18))
         register_button = ttk.Button(mainframe, text="Create an account", style='my.TButton', command=lambda: [parent.hide_frame(LandingPage), parent.show_frame(RegisterPage)])
         register_button.grid(column=0, row=4, sticky="nsew")
 
