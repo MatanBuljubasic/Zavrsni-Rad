@@ -10,23 +10,28 @@ class TrainingPage(ttk.Frame):
 
         self.columnconfigure(0, weight = 1)
         self.rowconfigure(0, weight = 1)
-        self.rowconfigure(1, weight = 3)
-        self.rowconfigure(2, weight = 1)
+        self.rowconfigure(1, weight = 1)
+        self.rowconfigure(2, weight = 3)
+        self.rowconfigure(3, weight = 1)
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
         self.info_label = ttk.Label(self, text='', wraplength=self.winfo_screenwidth(), justify='center')
         self.info_label.grid(column=0, row=0)
 
+        self.more_img = PhotoImage(file='Images\more.png')
+        self.more_button = ttk.Button(self, text='Show more', style='my.TButton', command=lambda: self.create_window("more"), image=self.more_img, compound=LEFT)
+        self.more_button.grid(column=0, row=1)
+
         self.parent = parent
 
         self.training_frame = ttk.Frame(self, borderwidth=2, relief='solid')
-        self.training_frame.grid(column=0, row=1, sticky='nsew')
+        self.training_frame.grid(column=0, row=2, sticky='nsew')
         self.training_frame.grid_rowconfigure(0, weight=1)
         self.training_frame.grid_columnconfigure(0, weight=1)
 
         self.bottom_frame = ttk.Frame(self)
-        self.bottom_frame.grid(column=0, row=2, sticky='nsew')
+        self.bottom_frame.grid(column=0, row=3, sticky='nsew')
         self.bottom_frame.columnconfigure(0, weight=1)
         self.bottom_frame.columnconfigure(1, weight=1)
 
@@ -41,7 +46,7 @@ class TrainingPage(ttk.Frame):
         self.stats_frame.columnconfigure(1, weight=1)
 
         quit_button = ttk.Button(self.stats_frame, text='Quit', style='my.TButton', command= lambda: [music.unload(), self.destroy(), self.parent.show_frame(self.parent.HomePage)])
-        quit_button.grid(column=1, row=0,)
+        quit_button.grid(column=1, row=0, pady=(30,0))
 
         self.begin_button = ttk.Button(self.training_frame, text='Begin', style='my.TButton', command= lambda: self.start_training())
         self.begin_button.grid(column=0, row=0)
@@ -105,6 +110,11 @@ class TrainingPage(ttk.Frame):
             label.config(text="Well done!", foreground='green')
         elif action == 'bad_feedback':
             label.config(text=f"Incorrect!\nThe correct answer was '{self.correct_a}'.", foreground='red')
+        elif action == 'more':
+            label.config(text=f'{self.more_info}')
+            ok_button = ttk.Button(newWindow, text="Ok", style='my.TButton', command= lambda: newWindow.destroy())
+            ok_button.grid(column=0, row=1)
+            return
         else:
             label.config(text=f"Your results:\nTasks: {self.task_number}\nAccuracy: {self.accuracy:.3f}%")
         ok_button = ttk.Button(newWindow, text="Ok", command= lambda: [newWindow.destroy(), self.next_task()])

@@ -24,6 +24,7 @@ class SyllableBeginnerPage(TrainingPage):
         repeat_button.grid(column=1, row=1)
         self.level = 1
         self.stimuli = STIMULI[1]
+        self.more_info = "This exercise uses an analytic approach to auditory training. It trains your ability to recognize syllables with the presence of background noise. After every correct or wrong answer, the volume of the background noise will increase or decrease, respectively."
 
 
     def start_training(self):
@@ -89,6 +90,8 @@ class SyllableIntermediatePage(TrainingPage):
         repeat_button.grid(column=1, row=1)
         self.level = 2
         self.stimuli = STIMULI[1]
+        self.more_info = "This exercise uses a synthetic approach to auditory training. It trains your ability to recognize syllables with the presence of background noise and to correctly guess a word with only a syllable as context. After every correct or wrong answer, the volume of the background noise will increase or decrease, respectively."
+
 
 
     def start_training(self):
@@ -154,6 +157,8 @@ class SyllableExpertPage(TrainingPage):
         repeat_button.grid(column=1, row=1)
         self.level = 3
         self.stimuli = STIMULI[1]
+        self.more_info = "This exercise uses an analytic approach to auditory training. It trains your ability to recognize similar syllables with the presence of background noise. After every correct or wrong answer, the volume of the background noise will increase or decrease, respectively."
+
 
 
     def start_training(self):

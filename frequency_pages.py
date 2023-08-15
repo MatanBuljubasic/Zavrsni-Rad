@@ -14,6 +14,7 @@ class FrequencyBeginnerPage(TrainingPage):
         self.info_label.config(text="You will hear two tones. Your task is to correctly\ndetect the latter tone as higher or lower.", font=('Times', 40))
         self.level = 1
         self.stimuli = STIMULI[0]
+        self.more_info = "This exercise uses an analytic approach to auditory training. It trains your ability to differentiate similar frequencies."
 
 
     def start_training(self):
@@ -26,6 +27,7 @@ class FrequencyBeginnerPage(TrainingPage):
         self.correct = 0
         self.modifier = 3800
         self.correct_a = ""
+        
         
 
         self.training_frame.columnconfigure(0, weight=1)
@@ -72,6 +74,7 @@ class FrequencyIntermediatePage(TrainingPage):
         self.info_label.config(text="You will hear three tones. Your task is to choose which\ntone is different from the other two.", font=('Times', 40))
         self.level = 2
         self.stimuli = STIMULI[0]
+        self.more_info = "This exercise uses an analytic approach to auditory training. It trains your ability to differentiate similar frequencies and your ability to memorize previous sounds."
 
 
     def start_training(self):
@@ -125,6 +128,7 @@ class FrequencyExpertPage(TrainingPage):
         self.info_label.config(text="You will hear a tone. After that, you will hear two more\ndifferent tones. Your task is to decide which of the latter\ntones is closer to the first one.", font=('Times', 40))
         self.level = 3
         self.stimuli = STIMULI[0]
+        self.more_info = "This exercise uses an analytic approach to auditory training. It trains your ability to differentiate similar frequencies and memorize previous sounds."
 
 
     def start_training(self):

@@ -35,16 +35,8 @@ data = {
 df = pd.DataFrame(data)
 df['Date'] = pd.to_datetime(df['Date'])
 df['Date'] = df['Date'].dt.date
-data = df.groupby('Date')['Success'].mean()
-print(data.keys())
+date = datetime(year=2023, month=7, day=16).date()
+dates = df['Date'][0]
+n_data = df[df['Date'] == date]
+print(n_data.iloc[0]['Subjects'])
 
-figure3 = plt.Figure(figsize=(12,3), dpi=100)
-ax3 = figure3.add_subplot(111)
-dates = df.groupby('Date')['Success'].mean()
-ax3.plot_date(x=dates.keys(), y=dates.values)
-ax3.set_xlim(dates.keys()[0], dates.keys()[-1])
-ax3.xaxis.set_major_locator(md.DayLocator())
-ax3.xaxis.set_major_formatter(md.DateFormatter('% Y-% m-% d'))
-ax3.set_title('Average accuracy per day')
-# ax3.fmt_xdata = md.DateFormatter('% Y-% m-% d')
-# figure3.autofmt_xdate()

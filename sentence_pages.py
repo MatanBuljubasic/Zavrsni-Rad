@@ -23,6 +23,8 @@ class SentenceBeginnerPage(TrainingPage):
         repeat_button.grid(column=1, row=1)
         self.level = 1
         self.stimuli = STIMULI[3]
+        self.more_info = "This exercise uses a synthetic approach to auditory training. It trains your ability to recognize sentences."
+
 
     def start_training(self):
         self.accuracy = 0
@@ -82,6 +84,7 @@ class SentenceIntermediatePage(TrainingPage):
         repeat_button.grid(column=1, row=1)
         self.level = 2
         self.stimuli = STIMULI[3]
+        self.more_info = "This exercise uses a synthetic approach to auditory training. It trains your ability to recognize sentences with the presence of background noise. After every correct or wrong answer, the volume of the background noise will increase or decrease, respectively."
 
     def start_training(self):
         self.accuracy = 0
@@ -146,6 +149,7 @@ class SentenceExpertPage(TrainingPage):
         repeat_button.grid(column=1, row=1)
         self.level = 3
         self.stimuli = STIMULI[3]
+        self.more_info = "This exercise uses a synthetic approach to auditory training. It trains your ability to recognize sentences with the presence of background noise, but without any offered options. After every correct or wrong answer, the volume of the background noise will increase or decrease, respectively."
 
     def start_training(self):
         self.accuracy = 0

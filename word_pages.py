@@ -23,6 +23,8 @@ class WordBeginnerPage(TrainingPage):
         repeat_button.grid(column=1, row=1)
         self.level = 1
         self.stimuli = STIMULI[2]
+        self.more_info = "This exercise uses an analytic approach to auditory training. It trains your ability to recognize words."
+
 
     def start_training(self):
         self.accuracy = 0
@@ -82,6 +84,7 @@ class WordIntermediatePage(TrainingPage):
         repeat_button.grid(column=1, row=1)
         self.level = 2
         self.stimuli = STIMULI[2]
+        self.more_info = "This exercise uses an analytic approach to auditory training. It trains your ability to recognize words with the presence of background noise. After every correct or wrong answer, the volume of the background noise will increase or decrease, respectively."
 
     def start_training(self):
         self.accuracy = 0
@@ -146,6 +149,8 @@ class WordExpertPage(TrainingPage):
         repeat_button.grid(column=1, row=1)
         self.level = 3
         self.stimuli = STIMULI[2]
+        self.more_info = "This exercise uses an analytic approach to auditory training. It trains your ability to recognize similar words with the presence of background noise. After every correct or wrong answer, the volume of the background noise will increase or decrease, respectively."
+
 
     def start_training(self):
         self.accuracy = 0

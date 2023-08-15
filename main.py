@@ -16,7 +16,6 @@ from datetime import datetime
 
 
 
-
 class App(Tk):
     def __init__(self):
         super().__init__()
@@ -36,9 +35,10 @@ class App(Tk):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.option_add("*Label.Font", "aerial 30 bold")
-        # s=ttk.Style()
-        # s.theme_use('clam')
-        # povecaj font svagdje
+        # s=ttk.Style(self)
+        # self.tk.call('lappend', 'auto_path', 'Theme\\awthemes-10.4.0')
+        # self.tk.call('package', 'require', 'awclearlooks')
+        # s.theme_use('awclearlooks')
 
         firebase_config = {"apiKey": "AIzaSyBzdiZrsDOQj0NjiqCETgDQ6v6zJ4TZXII",
             "authDomain": "auditory-training-database.firebaseapp.com",
@@ -65,7 +65,6 @@ class App(Tk):
 
         b = ttk.Style()
         b.configure('my.TButton', font=('Times', 28))
-
 
 
         self.frames = {}
@@ -116,11 +115,13 @@ class HomePage(ttk.Frame):
         choose_label.grid(column=0, row=1)
         choose_label.config(font=('Times', 30))
 
-        training_button = ttk.Button(self, text='Begin training', style="my.TButton", command= lambda: [parent.hide_frame(HomePage), parent.show_frame(StimuliPage)])
-        training_button.grid(column=0, row=2, sticky="nsew", padx=(300,300), pady=(20,20))
+        self.training_img = PhotoImage(file='Images\\training.png')
+        training_button = ttk.Button(self, text='Begin training', style="my.TButton", command= lambda: [parent.hide_frame(HomePage), parent.show_frame(StimuliPage)], image=self.training_img, compound=LEFT)
+        training_button.grid(column=0, row=2, sticky="nsew", padx=(500), pady=(20,20))
 
-        stats_button = ttk.Button(self, text='View statistics', style="my.TButton",  command= lambda: [parent.hide_frame(HomePage), parent.init_frame(StatsPage), parent.show_frame(StatsPage)])
-        stats_button.grid(column=0, row=3, sticky="nsew", padx=(300,300), pady=(20,20))
+        self.stats_img = PhotoImage(file='Images\\stats.png')
+        stats_button = ttk.Button(self, text='View statistics', style="my.TButton",  command= lambda: [parent.hide_frame(HomePage), parent.init_frame(StatsPage), parent.show_frame(StatsPage)], image=self.stats_img, compound=LEFT)
+        stats_button.grid(column=0, row=3, sticky="nsew", padx=(500), pady=(20,20))
 
         logout_button = ttk.Button(self, text='Sign out', style="my.TButton", command= lambda: [self.logout_user(), parent.hide_frame(StimuliPage), parent.show_frame(LandingPage)])
         logout_button.grid(column=0, row=4, sticky='sw')
@@ -150,18 +151,21 @@ class StimuliPage(ttk.Frame):
         choose_label.grid(column=0, row=0)
         choose_label.config(font=('Times', 30))
 
+        self.freq_img = PhotoImage(file='Images\\freq.png')
+        frequencies_button = ttk.Button(self, text='Frequencies', style="my.TButton", command= lambda: [parent.hide_frame(StimuliPage), self.choose_stimuli(parent, STIMULI[0])], image=self.freq_img, compound=LEFT)
+        frequencies_button.grid(column=0, row=1, sticky="nsew", padx=(500), pady=(20,20))
 
-        frequencies_button = ttk.Button(self, text='Frequencies', style="my.TButton", command= lambda: [parent.hide_frame(StimuliPage), self.choose_stimuli(parent, STIMULI[0])])
-        frequencies_button.grid(column=0, row=1, sticky="nsew", padx=(300,300), pady=(20,20))
+        self.syll_img = PhotoImage(file='Images\\syllables.png')
+        syllables_button = ttk.Button(self, text='Syllables', style="my.TButton",  command= lambda: [parent.hide_frame(StimuliPage), self.choose_stimuli(parent, STIMULI[1])], image=self.syll_img, compound=LEFT)
+        syllables_button.grid(column=0, row=2, sticky="nsew", padx=(500), pady=(20,20))
 
-        syllables_button = ttk.Button(self, text='Syllables', style="my.TButton",  command= lambda: [parent.hide_frame(StimuliPage), self.choose_stimuli(parent, STIMULI[1])])
-        syllables_button.grid(column=0, row=2, sticky="nsew", padx=(300,300), pady=(20,20))
+        self.word_img = PhotoImage(file='Images\\words.png')
+        words_button = ttk.Button(self, text='Words', style="my.TButton",  command= lambda: [parent.hide_frame(StimuliPage), self.choose_stimuli(parent, STIMULI[2])], image=self.word_img, compound=LEFT)
+        words_button.grid(column=0, row=3, sticky="nsew", padx=(500), pady=(20,20))
 
-        words_button = ttk.Button(self, text='Words', style="my.TButton",  command= lambda: [parent.hide_frame(StimuliPage), self.choose_stimuli(parent, STIMULI[2])])
-        words_button.grid(column=0, row=3, sticky="nsew", padx=(300,300), pady=(20,20))
-
-        sentences_button = ttk.Button(self, text='Sentences', style="my.TButton",  command= lambda: [parent.hide_frame(StimuliPage), self.choose_stimuli(parent, STIMULI[3])])
-        sentences_button.grid(column=0, row=4, sticky="nsew", padx=(300,300), pady=(20,20))
+        self.sent_img = PhotoImage(file='Images\\sentences.png')
+        sentences_button = ttk.Button(self, text='Sentences', style="my.TButton",  command= lambda: [parent.hide_frame(StimuliPage), self.choose_stimuli(parent, STIMULI[3])], image=self.sent_img, compound=LEFT)
+        sentences_button.grid(column=0, row=4, sticky="nsew", padx=(500), pady=(20,20))
 
         back_button = ttk.Button(self, text='Back', style="my.TButton", command= lambda: [parent.hide_frame(StimuliPage), parent.show_frame(HomePage)])
         back_button.grid(column=0, row=5, sticky='sw')
