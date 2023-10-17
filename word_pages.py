@@ -115,7 +115,7 @@ class WordIntermediatePage(TrainingPage):
 
         music.load('Audio\\background\\crowd.wav')
         music.set_volume(self.modifier)
-        music.play()
+        music.play(loops=-1)
 
         self.update()
 
@@ -177,7 +177,7 @@ class WordExpertPage(TrainingPage):
 
         music.load('Audio\\background\\crowd.wav')
         music.set_volume(self.modifier)
-        music.play()
+        music.play(loops=-1)
 
         self.update()
 
@@ -185,6 +185,7 @@ class WordExpertPage(TrainingPage):
 
     def next_task(self):
         self.stats_label.config(text=f'Task: {self.task_number+1}/10\nAccuracy: {float(self.accuracy):.3f}%')
+        music.set_volume((self.modifier*-1)/3800)
         rand_pair = random.sample(range(len(SIMILAR_WORDS)), 1)[0]
         rand_syll = random.randint(0,1)
         self.correct_a = SIMILAR_WORDS[rand_pair][rand_syll]

@@ -56,7 +56,7 @@ class SyllableBeginnerPage(TrainingPage):
 
         music.load('Audio\\background\\crowd.wav')
         music.set_volume(self.modifier)
-        music.play()
+        music.play(loops=-1)
 
         self.update()
 
@@ -122,7 +122,7 @@ class SyllableIntermediatePage(TrainingPage):
 
         music.load('Audio\\background\\crowd.wav')
         music.set_volume(self.modifier)
-        music.play()
+        music.play(loops=-1)
 
         self.update()
 
@@ -169,7 +169,7 @@ class SyllableExpertPage(TrainingPage):
         self.stats_label.config(font=('Times', 25))
         self.begin_button.grid_remove()
         self.correct = 0
-        self.modifier = 3800
+        self.modifier = 0
         self.correct_a = ""
         
 
@@ -185,7 +185,7 @@ class SyllableExpertPage(TrainingPage):
 
         music.load('Audio\\background\\crowd.wav')
         music.set_volume(self.modifier)
-        music.play()
+        music.play(loops=-1)
 
         self.update()
 
@@ -193,6 +193,7 @@ class SyllableExpertPage(TrainingPage):
 
     def next_task(self):
         self.stats_label.config(text=f'Task: {self.task_number+1}/10\nAccuracy: {float(self.accuracy):.3f}%')
+        music.set_volume((self.modifier*-1)/3800)
         rand_pair = random.sample(range(len(SIMILAR_SYLLABLES)), 1)[0]
         rand_syll = random.randint(0,1)
         self.correct_a = SIMILAR_SYLLABLES[rand_pair][rand_syll]

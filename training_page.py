@@ -94,8 +94,8 @@ class TrainingPage(ttk.Frame):
     def create_window(self, action):
         screen_width = self.parent.winfo_screenwidth()
         screen_height = self.parent.winfo_screenheight()
-        window_width = 300
-        window_height = 300
+        window_width = 500
+        window_height = 500
         x = (screen_width/2) - (window_width/2)
         y = (screen_height/2) - (window_height/2)
         newWindow = Toplevel(self.parent)

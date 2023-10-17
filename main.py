@@ -57,14 +57,14 @@ class App(Tk):
 
         pygame.init()
 
+        b = ttk.Style()
+        b.configure('my.TButton', font=('Times', 28))
+
 
         self.container = ttk.Frame(self)
         self.container.grid(column=0, row=0, sticky="nsew")
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
-
-        b = ttk.Style()
-        b.configure('my.TButton', font=('Times', 28))
 
 
         self.frames = {}
@@ -74,7 +74,6 @@ class App(Tk):
         self.HomePage = HomePage
         self.StimuliPage = StimuliPage
         self.PreTrainingPage = PreTrainingPage
-
 
 
         for F in {LandingPage, LoginPage, RegisterPage, HomePage, StimuliPage, PreTrainingPage}:
@@ -116,10 +115,12 @@ class HomePage(ttk.Frame):
         choose_label.config(font=('Times', 30))
 
         self.training_img = PhotoImage(file='Images\\training.png')
+        #Sličica preuzeta s: https://icons8.com/icon/1786/barbell
         training_button = ttk.Button(self, text='Begin training', style="my.TButton", command= lambda: [parent.hide_frame(HomePage), parent.show_frame(StimuliPage)], image=self.training_img, compound=LEFT)
         training_button.grid(column=0, row=2, sticky="nsew", padx=(500), pady=(20,20))
 
         self.stats_img = PhotoImage(file='Images\\stats.png')
+        #Sličica preuzeta s: https://icons8.com/icon/21572/futures
         stats_button = ttk.Button(self, text='View statistics', style="my.TButton",  command= lambda: [parent.hide_frame(HomePage), parent.init_frame(StatsPage), parent.show_frame(StatsPage)], image=self.stats_img, compound=LEFT)
         stats_button.grid(column=0, row=3, sticky="nsew", padx=(500), pady=(20,20))
 
@@ -152,6 +153,7 @@ class StimuliPage(ttk.Frame):
         choose_label.config(font=('Times', 30))
 
         self.freq_img = PhotoImage(file='Images\\freq.png')
+        #Sličica preuzeta s: https://icons8.com/icon/1893/audio-wave
         frequencies_button = ttk.Button(self, text='Frequencies', style="my.TButton", command= lambda: [parent.hide_frame(StimuliPage), self.choose_stimuli(parent, STIMULI[0])], image=self.freq_img, compound=LEFT)
         frequencies_button.grid(column=0, row=1, sticky="nsew", padx=(500), pady=(20,20))
 
@@ -160,10 +162,12 @@ class StimuliPage(ttk.Frame):
         syllables_button.grid(column=0, row=2, sticky="nsew", padx=(500), pady=(20,20))
 
         self.word_img = PhotoImage(file='Images\\words.png')
+        #Sličica preuzeta s: https://icons8.com/icon/35087/dictionary
         words_button = ttk.Button(self, text='Words', style="my.TButton",  command= lambda: [parent.hide_frame(StimuliPage), self.choose_stimuli(parent, STIMULI[2])], image=self.word_img, compound=LEFT)
         words_button.grid(column=0, row=3, sticky="nsew", padx=(500), pady=(20,20))
 
         self.sent_img = PhotoImage(file='Images\\sentences.png')
+        #Sličica preuzeta s: https://icons8.com/icon/jqs8OKb1NChi/bubble
         sentences_button = ttk.Button(self, text='Sentences', style="my.TButton",  command= lambda: [parent.hide_frame(StimuliPage), self.choose_stimuli(parent, STIMULI[3])], image=self.sent_img, compound=LEFT)
         sentences_button.grid(column=0, row=4, sticky="nsew", padx=(500), pady=(20,20))
 
@@ -273,7 +277,7 @@ class PreTrainingPage(ttk.Frame):
         self.beginner_label.config(text=f"Last score: {beginner_stats['last']}%\nBest score: {beginner_stats['best']}%\nAverage score: {beginner_stats['median']}%", font=('Times', 18))
         self.intermediate_label.config(text=f"Last score: {intermediate_stats['last']}%\nBest score: {intermediate_stats['best']}%\nAverage score: {intermediate_stats['median']}%", font=('Times', 18))
         self.expert_label.config(text=f"Last score: {expert_stats['last']}%\nBest score: {expert_stats['best']}%\nAverage score: {expert_stats['median']}%", font=('Times', 18))
-        #kako prikazati samo dvije decimale, ako postoji mogućnost da je string a ne broj?
+        
         if stimuli == STIMULI[0]:
             self.beginner_button.config(command= lambda: [parent.hide_frame(PreTrainingPage), parent.init_frame(FrequencyBeginnerPage), parent.show_frame(FrequencyBeginnerPage)])
             self.intermediate_button.config(command= lambda: [parent.hide_frame(PreTrainingPage), parent.init_frame(FrequencyIntermediatePage), parent.show_frame(FrequencyIntermediatePage)])

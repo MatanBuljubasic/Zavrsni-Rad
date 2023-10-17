@@ -145,6 +145,14 @@ class DailyStatsPage(ttk.Frame):
         global index
         index = 0
 
+        stimuli_label = ttk.Label(self, text='', font=('Times', 23))
+        stimuli_label.grid(row=3, column=0, columnspan=3, pady=(20,0))
+        level_label = ttk.Label(self, text='', font=('Times', 23))
+        level_label.grid(row=4, column=0, columnspan=3)
+        accuracy_label = ttk.Label(self, text='', font=('Times', 23))
+        accuracy_label.grid(row=5, column=0, columnspan=3)
+        index_label = ttk.Label(self, text='', font=('Times', 18))
+
         try:
             self.df = pd.DataFrame.from_dict(parent.db.child("users").child(parent.user_id).child("results").get().val().values())
         except:
@@ -201,16 +209,12 @@ class DailyStatsPage(ttk.Frame):
         self.show_button = ttk.Button(self, text='Show', style="my.TButton", command=lambda:date_update())
         self.show_button.grid(row=1, column=1, pady=(10,0))
 
-        stimuli_label = ttk.Label(self, text='', font=('Times', 23))
-        stimuli_label.grid(row=3, column=0, columnspan=3, pady=(20,0))
-        level_label = ttk.Label(self, text='', font=('Times', 23))
-        level_label.grid(row=4, column=0, columnspan=3)
-        accuracy_label = ttk.Label(self, text='', font=('Times', 23))
-        accuracy_label.grid(row=5, column=0, columnspan=3)
-        index_label = ttk.Label(self, text='', font=('Times', 18))
+        
 
         self.r_arrow_img = PhotoImage(file='Images\\r_arrow.png')
+        #Sličica preuzeta s: https://icons8.com/icon/39969/right-arrow
         self.l_arrow_img = PhotoImage(file='Images\l_arrow.png')
+        #Sličica preuzeta s: https://icons8.com/icon/39944/left-arrow
         next_button = ttk.Button(self, image=self.r_arrow_img, command=lambda: [increase(), show_results()])
         prev_button = ttk.Button(self, image=self.l_arrow_img, command=lambda: [decrease(), show_results()])
         

@@ -102,7 +102,7 @@ class LoginPage(ttk.Frame):
             home_page.add_user(parent)
             parent.show_frame(parent.HomePage)
         except:
-            self.error_message.set('Username or password is incorrect.')
+            self.error_message.set('Email or password is incorrect.')
 
     def toggle_password(self):
         if self.password_entry.cget('show') == '':
@@ -128,8 +128,6 @@ class RegisterPage(ttk.Frame):
         self.email_state=False
         self.password_state=False
 
-        check_password_wrapper = (self.register(self.check_password), '%P')
-        check_email_wrapper = (self.register(self.check_email), '%P')
 
         back_button = ttk.Button(self, text='Back', style='my.TButton', command= lambda: [parent.hide_frame(RegisterPage), self.email_entry.delete(0, END), self.password_entry.delete(0, END), self.error_message.set(''), self.email_message.set(''), self.password_message.set(''), parent.show_frame(LandingPage)])
         back_button.grid(column=0, row=2, sticky="sw")
@@ -143,8 +141,7 @@ class RegisterPage(ttk.Frame):
         email_label.grid(column=0, row=0, sticky="nsew", padx=(0, 10), pady=(0,10))
 
         email = StringVar()
-        email.trace('w', self.check_both)
-        self.email_entry = ttk.Entry(register_frame, width=30, textvariable=email, validate='focusout', validatecommand=check_email_wrapper, font=('Times', 16))
+        self.email_entry = ttk.Entry(register_frame, width=30, textvariable=email, font=('Times', 16))
         self.email_entry.grid(column=1, row=0, sticky="w", pady=(0,10))
 
         self.email_message = StringVar()
@@ -155,8 +152,7 @@ class RegisterPage(ttk.Frame):
         password_label.grid(column=0, row=2, sticky="nsew", pady=(0,10))
 
         password = StringVar()
-        password.trace('w', self.check_both)
-        self.password_entry = ttk.Entry(register_frame, width=30, textvariable=password, show="*", validate='focusout', validatecommand=check_password_wrapper, font=('Times', 16))
+        self.password_entry = ttk.Entry(register_frame, width=30, textvariable=password, show="*", font=('Times', 16))
         self.password_entry.grid(column=1, row=2, sticky="w", pady=(0,10))
         
         self.password_message = StringVar()
@@ -168,7 +164,6 @@ class RegisterPage(ttk.Frame):
 
         self.register_button = ttk.Button(register_frame, text="Register", style='my.TButton', command= lambda: [self.register_user(email, password, parent)])
         self.register_button.grid(column=1, row=4, sticky="e")
-        self.register_button.state(['disabled'])
 
         self.error_message = StringVar()
         self.error_message_label = ttk.Label(register_frame, foreground='red', textvariable=self.error_message, font=('Times', 16))
@@ -176,11 +171,18 @@ class RegisterPage(ttk.Frame):
 
     def register_user(self, email, password, parent):
         self.error_message.set('')
-        try:
-            user = parent.auth.create_user_with_email_and_password(email.get(),password.get())
-            parent.db.child("users").child(user['localId']).set({"email":user['email']})
-        except:
-            self.error_message.set('Email already exists!')
+        if self.check_password(password.get()) and self.check_email(email.get()):
+            try:
+                user = parent.auth.create_user_with_email_and_password(email.get(),password.get())
+                parent.db.child("users").child(user['localId']).set({"email":user['email']})
+            except:
+                self.error_message.set('Email already exists!')
+                return
+        else:
+            if self.check_password(password.get()) == False:
+                self.password_message.set('Password must have:\n- At least one alphabetic character\n(uppercase or lowercase)\n- At least one digit\n- Minimum length of 8 characters\n- No spaces')
+            if self.check_email(email.get()) == False:
+                self.email_message.set('Email address is not valid.\nExample of valid email address:\njohn.doe@gmail.com')
             return
         parent.hide_frame(RegisterPage)
         self.email_entry.delete(0, END)
@@ -208,15 +210,6 @@ class RegisterPage(ttk.Frame):
             self.email_state = False
             self.email_message.set('Email address is not valid.\nExample of valid email address:\njohn.doe@gmail.com')
         return valid
-        # radi tek kad dodam razmak na kraj
-
-    def check_both(self, *args):
-        x = self.email_state
-        y = self.password_state
-        if x and y:
-            self.register_button.state(['!disabled'])
-        else:
-            self.register_button.state(['disabled'])
 
     def toggle_password(self):
         if self.password_entry.cget('show') == '':

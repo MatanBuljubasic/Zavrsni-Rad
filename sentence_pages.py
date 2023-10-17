@@ -115,7 +115,7 @@ class SentenceIntermediatePage(TrainingPage):
 
         music.load('Audio\\background\\crowd.wav')
         music.set_volume(self.modifier)
-        music.play()
+        music.play(loops=-1)
 
         self.update()
 
@@ -177,7 +177,7 @@ class SentenceExpertPage(TrainingPage):
 
         music.load('Audio\\background\\crowd.wav')
         music.set_volume(self.modifier)
-        music.play()
+        music.play(loops=-1)
 
         self.update()
 
